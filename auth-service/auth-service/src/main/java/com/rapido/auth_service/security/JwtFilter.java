@@ -1,6 +1,9 @@
 package com.rapido.auth_service.security;
 
 import com.rapido.auth_service.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,36 +39,51 @@ public class JwtFilter extends OncePerRequestFilter {
         String jwt = null;
         String email = null;
 
-        if (authHeader != null &&
-                authHeader.startsWith("Bearer ")) {
+        try {
 
-            jwt = authHeader.substring(7);
+            if (authHeader != null &&
+                    authHeader.startsWith("Bearer ")) {
 
-            email = jwtUtil.extractEmail(jwt);
-        }
+                jwt = authHeader.substring(7);
 
-        if (email != null &&
-                SecurityContextHolder.getContext()
-                        .getAuthentication() == null) {
-
-            if (jwtUtil.validateToken(jwt)) {
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                Collections.emptyList()
-                        );
-
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
-
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authToken);
+                email = jwtUtil.extractEmail(jwt);
             }
+
+            if (email != null &&
+                    SecurityContextHolder.getContext()
+                            .getAuthentication() == null) {
+
+                if (jwtUtil.validateToken(jwt)) {
+
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    email,
+                                    null,
+                                    Collections.emptyList()
+                            );
+
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authToken);
+                }
+            }
+
+        } catch (ExpiredJwtException e) {
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("JWT Token Expired");
+            return;
+
+        } catch (MalformedJwtException | SignatureException e) {
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid JWT Token");
+            return;
         }
 
         filterChain.doFilter(request, response);
