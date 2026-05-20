@@ -3,15 +3,16 @@ package com.rapido.payment_service.controller;
 import com.rapido.payment_service.dto.PaymentRequest;
 import com.rapido.payment_service.dto.RefundRequest;
 import com.rapido.payment_service.dto.TopUpRequest;
+import com.rapido.payment_service.entity.Transaction;
+import com.rapido.payment_service.entity.Wallet;
 import com.rapido.payment_service.service.PaymentService;
 
-import jakarta.validation.Valid;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -19,76 +20,58 @@ public class PaymentController {
     public PaymentController(
             PaymentService paymentService
     ) {
-
         this.paymentService = paymentService;
     }
 
-    @PostMapping("/create/{userId}")
-    public ResponseEntity<?> createWallet(
+    @GetMapping("/test")
+    public String test() {
+        return "Payment Service Working";
+    }
+
+    @PostMapping("/wallet/{userId}")
+    public Wallet createWallet(
             @PathVariable Long userId
     ) {
+        return paymentService.createWallet(userId);
+    }
 
-        return ResponseEntity.ok(
-                paymentService.createWallet(userId)
+    @PostMapping("/wallet/topup")
+    public Wallet topUpWallet(
+            @RequestBody TopUpRequest request
+    ) {
+        return paymentService.topUpWallet(
+                request.getUserId(),
+                request.getAmount()
         );
     }
 
-    @PostMapping("/topup")
-    public ResponseEntity<?> topUpWallet(
-            @Valid
-            @RequestBody
-            TopUpRequest request
-    ) {
-
-        return ResponseEntity.ok(
-                paymentService.topUpWallet(
-                        request.getUserId(),
-                        request.getAmount()
-                )
-        );
-    }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<?> getWalletBalance(
+    @GetMapping("/wallet/balance/{userId}")
+    public Double getBalance(
             @PathVariable Long userId
     ) {
-
-        return ResponseEntity.ok(
-                paymentService.getBalance(userId)
-        );
+        return paymentService.getBalance(userId);
     }
 
     @PostMapping("/ride/pay")
-    public ResponseEntity<?> processRidePayment(
-            @RequestBody
-            PaymentRequest request
+    public Transaction processRidePayment(
+            @RequestBody PaymentRequest request
     ) {
+        return paymentService.processRidePayment(request);
+    }
 
-        return ResponseEntity.ok(
-                paymentService.processRidePayment(request)
+    @PostMapping("/refund")
+    public String refundRide(
+            @RequestBody RefundRequest request
+    ) {
+        return paymentService.refundRide(
+                request.getRideId()
         );
     }
 
-    @PostMapping("/ride/refund")
-    public ResponseEntity<?> refundRide(
-            @RequestBody
-            RefundRequest request
-    ) {
-
-        return ResponseEntity.ok(
-                paymentService.refundRide(
-                        request.getRideId()
-                )
-        );
-    }
-
-    @GetMapping("/transactions/{userId}")
-    public ResponseEntity<?> getTransactionHistory(
+    @GetMapping("/history/{userId}")
+    public List<Transaction> getHistory(
             @PathVariable Long userId
     ) {
-
-        return ResponseEntity.ok(
-                paymentService.getTransactionHistory(userId)
-        );
+        return paymentService.getTransactionHistory(userId);
     }
 }

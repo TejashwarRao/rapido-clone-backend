@@ -1,48 +1,85 @@
 package com.rapido.ride_service.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.time.LocalDateTime;
-
-@Getter
-@Setter
 @Entity
-@Table(
-        name = "rides",
-        indexes = {
-                @Index(columnList = "userId"),
-                @Index(columnList = "driverId"),
-                @Index(columnList = "status")
-        }
-)
+@Table(name = "rides")
 public class Ride {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    private String userEmail;
 
-    private Long driverId;
+    private String driverEmail;
 
-    private Double pickupLatitude;
+    private String pickupLocation;
 
-    private Double pickupLongitude;
+    private String dropLocation;
 
-    private Double dropLatitude;
-
-    private Double dropLongitude;
+    private Double fare;
 
     @Enumerated(EnumType.STRING)
     private RideStatus status;
 
-    private Double estimatedDistance;
+    // GETTERS
 
-    private Double estimatedFare;
+    public Long getId() {
+        return id;
+    }
 
-    private LocalDateTime requestedAt;
+    public String getUserEmail() {
+        return userEmail;
+    }
 
-    private LocalDateTime completedAt;
+    public String getDriverEmail() {
+        return driverEmail;
+    }
+
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    public String getDropLocation() {
+        return dropLocation;
+    }
+
+    public Double getFare() {
+        return fare;
+    }
+
+    public RideStatus getStatus() {
+        return status;
+    }
+
+    // SETTERS
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setDriverEmail(String driverEmail) {
+        this.driverEmail = driverEmail;
+    }
+
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+    public void setDropLocation(String dropLocation) {
+        this.dropLocation = dropLocation;
+    }
+
+    public void setFare(Double fare) {
+        this.fare = fare;
+    }
+
+    public void setStatus(RideStatus status) {
+        this.status = status;
+    }
 }

@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "drivers")
-public class Driver extends BaseEntity {
+public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fullName;
+    private String name;
 
     @Column(unique = true)
     private String email;
@@ -19,26 +19,20 @@ public class Driver extends BaseEntity {
 
     private String vehicleNumber;
 
-    private String vehicleModel;
+    private Double latitude;
 
-    private String vehicleType;
+    private Double longitude;
 
-    private Boolean available = false;
+    private Boolean available;
 
-    private Boolean online = false;
-
-    private Double currentLatitude;
-
-    private Double currentLongitude;
-
-    // Getters
+    // GETTERS
 
     public Long getId() {
         return id;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
@@ -53,34 +47,26 @@ public class Driver extends BaseEntity {
         return vehicleNumber;
     }
 
-    public String getVehicleModel() {
-        return vehicleModel;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public String getVehicleType() {
-        return vehicleType;
+    public Double getLongitude() {
+        return longitude;
     }
 
     public Boolean getAvailable() {
         return available;
     }
 
-    public Boolean getOnline() {
-        return online;
+    // SETTERS
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Double getCurrentLatitude() {
-        return currentLatitude;
-    }
-
-    public Double getCurrentLongitude() {
-        return currentLongitude;
-    }
-
-    // Setters
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setEmail(String email) {
@@ -95,27 +81,15 @@ public class Driver extends BaseEntity {
         this.vehicleNumber = vehicleNumber;
     }
 
-    public void setVehicleModel(String vehicleModel) {
-        this.vehicleModel = vehicleModel;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public void setAvailable(Boolean available) {
         this.available = available;
-    }
-
-    public void setOnline(Boolean online) {
-        this.online = online;
-    }
-
-    public void setCurrentLatitude(Double currentLatitude) {
-        this.currentLatitude = currentLatitude;
-    }
-
-    public void setCurrentLongitude(Double currentLongitude) {
-        this.currentLongitude = currentLongitude;
     }
 }

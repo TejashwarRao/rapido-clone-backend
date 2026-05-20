@@ -1,43 +1,50 @@
 package com.rapido.user_service.controller;
 
-import com.rapido.user_service.dto.UserProfileDTO;
-import com.rapido.user_service.service.UserService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping
 public class UserController {
 
-    private final UserService userService;
+    // PUBLIC API
+    @GetMapping("/users/public/test")
+    public String publicApi() {
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+        return "Public API";
     }
 
-    // GET USER PROFILE
-    @GetMapping("/profile")
-    public ResponseEntity<UserProfileDTO> getProfile(
-            @RequestParam String email
+    // USER API
+    @GetMapping("/users/profile")
+    public String userProfile(
+            Authentication authentication
     ) {
 
-        return ResponseEntity.ok(
-                userService.getProfile(email)
-        );
+        return "USER PROFILE : "
+                + authentication.getName();
     }
 
-    // UPDATE USER PROFILE
-    @PutMapping("/profile")
-    public ResponseEntity<String> updateProfile(
-            @RequestParam String email,
-            @Valid @RequestBody UserProfileDTO dto
+    // DRIVER API
+    @GetMapping("/drivers/dashboard")
+    public String driverDashboard(
+            Authentication authentication
     ) {
 
-        userService.updateProfile(email, dto);
+        return "DRIVER DASHBOARD : "
+                + authentication.getName();
+    }
 
-        return ResponseEntity.ok(
-                "Profile Updated Successfully"
-        );
+    // ADMIN API
+    @GetMapping("/admin/panel")
+    public String adminPanel(
+            Authentication authentication
+    ) {
+
+        return "ADMIN PANEL : "
+                + authentication.getName();
     }
 }

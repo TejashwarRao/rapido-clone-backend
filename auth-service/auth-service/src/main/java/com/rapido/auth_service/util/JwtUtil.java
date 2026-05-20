@@ -2,50 +2,128 @@ package com.rapido.auth_service.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
+import javax.crypto.SecretKey;
+
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY =
-            "my_super_secret_key_for_rapido_auth_service_2026";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    private static final long EXPIRATION_TIME = 86400000;
+    @Value("${jwt.expiration}")
+    private long expiration;
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    // CREATE SECRET KEY
+    private SecretKey getSigningKey() {
+
+        return Keys.hmacShaKeyFor(
+                secret.getBytes()
+        );
     }
 
-    public String generateToken(String email) {
+    // GENERATE TOKEN
+    public String generateToken(
+            String email,
+            String role
+    ) {
+
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSigningKey())
+
+                .setSubject(email)
+
+                .claim(
+                        "role",
+                        role
+                )
+
+                .setIssuedAt(
+                        new Date()
+                )
+
+                .setExpiration(
+                        new Date(
+                                System.currentTimeMillis()
+                                        + expiration
+                        )
+                )
+
+                .signWith(
+                        getSigningKey(),
+                        SignatureAlgorithm.HS256
+                )
+
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith((javax.crypto.SecretKey) getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+    // EXTRACT EMAIL
+    public String extractEmail(
+            String token
+    ) {
 
-        return claims.getSubject();
+        return extractClaims(token)
+                .getSubject();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            extractEmail(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    // EXTRACT ROLE
+    public String extractRole(
+            String token
+    ) {
+
+        return extractClaims(token)
+                .get(
+                        "role",
+                        String.class
+                );
+    }
+
+    // VALIDATE TOKEN
+    public boolean validateToken(
+            String token,
+            String email
+    ) {
+
+        String extractedEmail =
+                extractEmail(token);
+
+        return extractedEmail.equals(email)
+                &&
+                !isTokenExpired(token);
+    }
+
+    // CHECK EXPIRATION
+    private boolean isTokenExpired(
+            String token
+    ) {
+
+        return extractClaims(token)
+                .getExpiration()
+                .before(new Date());
+    }
+
+    // EXTRACT CLAIMS
+    private Claims extractClaims(
+            String token
+    ) {
+
+        return Jwts.parserBuilder()
+
+                .setSigningKey(
+                        getSigningKey()
+                )
+
+                .build()
+
+                .parseClaimsJws(token)
+
+                .getBody();
     }
 }

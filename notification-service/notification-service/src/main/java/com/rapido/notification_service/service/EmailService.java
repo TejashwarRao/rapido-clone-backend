@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    private final JavaMailSender
-            mailSender;
+    private final JavaMailSender mailSender;
 
     public EmailService(
             JavaMailSender mailSender
@@ -36,9 +35,5 @@ public class EmailService {
         message.setText(body);
 
         mailSender.send(message);
-
-        System.out.println(
-                "Email sent successfully"
-        );
     }
 }

@@ -1,10 +1,12 @@
 package com.rapido.ride_service.controller;
 
-import com.rapido.ride_service.dto.RideRequestDTO;
+import com.rapido.ride_service.entity.Ride;
+
 import com.rapido.ride_service.service.RideService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rides")
@@ -16,61 +18,65 @@ public class RideController {
             RideService rideService
     ) {
 
-        this.rideService = rideService;
+        this.rideService =
+                rideService;
     }
 
-    @PostMapping("/request")
-    public ResponseEntity<?> requestRide(
-            @Valid @RequestBody RideRequestDTO dto
+    // TEST API
+    @GetMapping("/test")
+    public String test() {
+
+        return "Ride Service Working";
+    }
+
+    // CREATE RIDE
+    @PostMapping
+    public Ride createRide(
+            @RequestBody Ride ride
     ) {
 
-        Long userId = 1L;
-
-        return ResponseEntity.ok(
-                rideService.requestRide(
-                        userId,
-                        dto
-                )
+        return rideService.createRide(
+                ride
         );
     }
 
-    @PutMapping("/{rideId}/accept")
-    public ResponseEntity<?> acceptRide(
+    // GET ALL RIDES
+    @GetMapping
+    public List<Ride> getAllRides() {
+
+        return rideService.getAllRides();
+    }
+
+    // START RIDE
+    @PutMapping("/start/{rideId}")
+    public Ride startRide(
             @PathVariable Long rideId
     ) {
 
-        return ResponseEntity.ok(
-                rideService.acceptRide(rideId)
+        return rideService.startRide(
+                rideId
         );
     }
 
-    @PutMapping("/{rideId}/start")
-    public ResponseEntity<?> startRide(
+    // COMPLETE RIDE
+    @PutMapping("/complete/{rideId}")
+    public Ride completeRide(
             @PathVariable Long rideId
     ) {
 
-        return ResponseEntity.ok(
-                rideService.startRide(rideId)
+        return rideService.completeRide(
+                rideId
         );
     }
 
-    @PutMapping("/{rideId}/complete")
-    public ResponseEntity<?> completeRide(
+    // CANCEL RIDE
+    @PutMapping("/cancel/{rideId}")
+    public Ride cancelRide(
             @PathVariable Long rideId
     ) {
 
-        return ResponseEntity.ok(
-                rideService.completeRide(rideId)
-        );
-    }
-
-    @PutMapping("/{rideId}/cancel")
-    public ResponseEntity<?> cancelRide(
-            @PathVariable Long rideId
-    ) {
-
-        return ResponseEntity.ok(
-                rideService.cancelRide(rideId)
+        return rideService.cancelRide(
+                rideId
         );
     }
 }

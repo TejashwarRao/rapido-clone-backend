@@ -1,47 +1,55 @@
 package com.rapido.notification_service.controller;
 
 import com.rapido.notification_service.dto.NotificationRequestDTO;
-import com.rapido.notification_service.dto.NotificationResponseDTO;
-import com.rapido.notification_service.dto.OtpRequestDTO;
+
+import com.rapido.notification_service.entity.Notification;
+
 import com.rapido.notification_service.service.NotificationService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/notifications")
-@RequiredArgsConstructor
 public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @PostMapping("/send")
-    public ResponseEntity<NotificationResponseDTO> sendNotification(
-            @Valid @RequestBody NotificationRequestDTO request) {
+    public NotificationController(
+            NotificationService notificationService
+    ) {
 
-        return ResponseEntity.ok(notificationService.sendNotification(request));
+        this.notificationService =
+                notificationService;
     }
 
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<List<NotificationResponseDTO>> getHistory(
-            @PathVariable Long userId) {
+    // TEST API
+    @GetMapping("/test")
+    public String test() {
 
-        return ResponseEntity.ok(notificationService.getHistory(userId));
+        return "Notification Service Working";
     }
 
-    @PostMapping("/otp")
-    public ResponseEntity<NotificationResponseDTO> sendOtp(
-            @Valid @RequestBody OtpRequestDTO request) {
+    // SEND NOTIFICATION
+    @PostMapping
+    public Notification sendNotification(
+            @RequestBody NotificationRequestDTO request
+    ) {
 
-        return ResponseEntity.ok(notificationService.sendOtp(request));
+        return notificationService.sendNotification(
+                request
+        );
     }
-    @PostMapping("/retry/{id}")
-    public ResponseEntity<NotificationResponseDTO> retryNotification(
-            @PathVariable Long id) {
 
-        return ResponseEntity.ok(notificationService.retryNotification(id));
+    // GET USER NOTIFICATIONS
+    @GetMapping("/{userId}")
+    public List<Notification> getUserNotifications(
+            @PathVariable Long userId
+    ) {
+
+        return notificationService.getUserNotifications(
+                userId
+        );
     }
 }

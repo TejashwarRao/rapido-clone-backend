@@ -2,9 +2,9 @@ package com.rapido.notification_service.entity;
 
 public enum NotificationType {
 
-    PUSH,
+    EMAIL,
 
     SMS,
 
-    EMAIL
+    PUSH
 }

@@ -1,17 +1,11 @@
 package com.rapido.payment_service.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "transactions",
-        indexes = {
-                @Index(name = "idx_ride_id", columnList = "rideId"),
-                @Index(name = "idx_payer_id", columnList = "payerId"),
-                @Index(name = "idx_status", columnList = "status")
-        }
-)
+@Table(name = "transactions")
 public class Transaction {
 
     @Id
@@ -33,6 +27,8 @@ public class Transaction {
 
     private LocalDateTime createdAt;
 
+    // GETTERS
+
     public Long getId() {
         return id;
     }
@@ -41,52 +37,58 @@ public class Transaction {
         return rideId;
     }
 
-    public void setRideId(Long rideId) {
-        this.rideId = rideId;
-    }
-
     public Long getPayerId() {
         return payerId;
-    }
-
-    public void setPayerId(Long payerId) {
-        this.payerId = payerId;
     }
 
     public Long getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(Long driverId) {
-        this.driverId = driverId;
-    }
-
     public Double getAmount() {
         return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
     }
 
     public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(PaymentStatus status) {
-        this.status = status;
-    }
-
     public String getTransactionReference() {
         return transactionReference;
     }
 
-    public void setTransactionReference(String transactionReference) {
-        this.transactionReference = transactionReference;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    // SETTERS
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setRideId(Long rideId) {
+        this.rideId = rideId;
+    }
+
+    public void setPayerId(Long payerId) {
+        this.payerId = payerId;
+    }
+
+    public void setDriverId(Long driverId) {
+        this.driverId = driverId;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
+
+    public void setTransactionReference(String transactionReference) {
+        this.transactionReference = transactionReference;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {
