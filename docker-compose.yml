@@ -1,0 +1,271 @@
+services:
+
+  # =====================================================
+  # POSTGRESQL
+  # =====================================================
+
+  postgres:
+    image: postgres:15
+
+    container_name: rapido-postgres
+
+    environment:
+      POSTGRES_DB: rapido_db
+      POSTGRES_USER: rapido_user
+      POSTGRES_PASSWORD: rapido_pass
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # REDIS
+  # =====================================================
+
+  redis:
+    image: redis:7
+
+    container_name: rapido-redis
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis-data:/data
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # RABBITMQ
+  # =====================================================
+
+  rabbitmq:
+    image: rabbitmq:management
+
+    container_name: rapido-rabbitmq
+
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # EUREKA SERVER
+  # =====================================================
+
+  eureka-server:
+    build: ./eureka-server/eureka-server
+
+    container_name: eureka-server
+
+    ports:
+      - "8761:8761"
+
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # API GATEWAY
+  # =====================================================
+
+  api-gateway:
+    build: ./api-gateway/api-gateway
+
+    container_name: api-gateway
+
+    ports:
+      - "9090:9090"
+
+    depends_on:
+      - eureka-server
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # AUTH SERVICE
+  # =====================================================
+
+  auth-service:
+    build: ./auth-service/auth-service
+
+    container_name: auth-service
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - postgres
+      - eureka-server
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # USER SERVICE
+  # =====================================================
+
+  user-service:
+    build: ./user-service/user-service
+
+    container_name: user-service
+
+    ports:
+      - "8082:8082"
+
+    depends_on:
+      - postgres
+      - eureka-server
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # DRIVER SERVICE
+  # =====================================================
+
+  driver-service:
+    build: ./driver-service/driver-service
+
+    container_name: driver-service
+
+    ports:
+      - "8083:8083"
+
+    depends_on:
+      - postgres
+      - eureka-server
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # RIDE SERVICE
+  # =====================================================
+
+  ride-service:
+    build: ./ride-service/ride-service
+
+    container_name: ride-service
+
+    ports:
+      - "8084:8084"
+
+    depends_on:
+      - postgres
+      - eureka-server
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  payment-service:
+    build: ./payment-service/payment-service
+
+    container_name: payment-service
+
+    ports:
+      - "8085:8085"
+
+    depends_on:
+      - postgres
+      - eureka-server
+      - redis
+      - rabbitmq
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+  # =====================================================
+  # NOTIFICATION SERVICE
+  # =====================================================
+
+  notification-service:
+    build: ./notification-service/notification-service
+
+    container_name: notification-service
+
+    ports:
+      - "8086:8086"
+
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - eureka-server
+
+    networks:
+      - rapido-network
+
+    restart: always
+
+
+
+# =====================================================
+# NETWORKS
+# =====================================================
+
+networks:
+  rapido-network:
+
+
+
+# =====================================================
+# VOLUMES
+# =====================================================
+
+volumes:
+  postgres-data:
+  redis-data:
