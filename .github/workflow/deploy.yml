@@ -1,0 +1,48 @@
+name: Rapido CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build Application
+        run: mvn clean package -DskipTests
+
+      - name: Docker Build
+        run: docker compose build
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu
+
+            if [ ! -d "rapido-clone-backend" ]; then
+              git clone https://github.com/saitejayadav8/rapido-clone-backend.git
+            fi
+
+            cd rapido-clone-backend
+
+            git pull origin main
+
+            docker compose down
+            docker compose up --build -d
+
+            docker system prune -f
