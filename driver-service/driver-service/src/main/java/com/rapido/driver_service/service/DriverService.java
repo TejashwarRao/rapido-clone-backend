@@ -1,59 +1,48 @@
 package com.rapido.driver_service.service;
 
+import com.rapido.driver_service.dto.NearbyDriverResponse;
 import com.rapido.driver_service.entity.Driver;
-
 import com.rapido.driver_service.repository.DriverRepository;
+
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DriverService {
 
     private final DriverRepository driverRepository;
 
-    public DriverService(
-            DriverRepository driverRepository
+    public List<NearbyDriverResponse> findNearbyDrivers(
+            Double latitude,
+            Double longitude,
+            Double radius
     ) {
 
-        this.driverRepository =
-                driverRepository;
-    }
+        List<Driver> drivers =
+                driverRepository.findAll();
 
-    // CREATE DRIVER
-    public Driver addDriver(
-            Driver driver
-    ) {
+        List<NearbyDriverResponse> response =
+                new ArrayList<>();
 
-        return driverRepository.save(driver);
-    }
+        for (Driver driver : drivers) {
 
-    // AVAILABLE DRIVERS
-    public List<Driver> getAvailableDrivers() {
+            NearbyDriverResponse dto =
+                    new NearbyDriverResponse();
 
-        return driverRepository.findByAvailableTrue();
-    }
+            dto.setId(driver.getId());
+            dto.setName(driver.getName());
+            dto.setLatitude(driver.getLatitude());
+            dto.setLongitude(driver.getLongitude());
+            dto.setRating(driver.getRating());
 
-    // UPDATE ONLINE STATUS
-    public String updateOnlineStatus(
-            String email,
-            boolean online
-    ) {
+            response.add(dto);
+        }
 
-        Driver driver =
-                driverRepository
-                        .findByEmail(email)
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Driver not found"
-                                )
-                        );
-
-        driver.setAvailable(online);
-
-        driverRepository.save(driver);
-
-        return "Driver status updated successfully";
+        return response;
     }
 }
