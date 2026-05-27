@@ -5,17 +5,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NearbyDriverResponse {
+public class BestDriverResponse {
 
     private Long id;
 
     private String name;
 
+    private Double rating;
+
+    private Double score;
+
     private Double latitude;
 
     private Double longitude;
 
-    private Double rating;
-
-    private Double score;
+    private String message;
 }

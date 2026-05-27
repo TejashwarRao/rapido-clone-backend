@@ -31,4 +31,13 @@ public class Driver {
     private Double longitude;
 
     private Double rating;
+
+    @Column(name = "acceptance_rate")
+    private Double acceptanceRate;
+
+    @Column(name = "cancellation_rate")
+    private Double cancellationRate;
+
+    @Column(name = "current_load")
+    private Integer currentLoad;
 }
