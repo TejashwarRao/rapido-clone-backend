@@ -8,22 +8,16 @@ import io.jsonwebtoken.security.SignatureException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 import java.util.Collections;
 
 @Component
@@ -32,7 +26,6 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     public JwtFilter(JwtUtil jwtUtil) {
-
         this.jwtUtil = jwtUtil;
     }
 
@@ -43,44 +36,34 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authHeader =
-                request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
         String jwt = null;
-
         String email = null;
 
         try {
 
-            // CHECK AUTH HEADER
-            if (
-                    authHeader != null
-                            &&
-                            authHeader.startsWith("Bearer ")
-            ) {
+            // CHECK JWT HEADER
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-                jwt =
-                        authHeader.substring(7);
+                jwt = authHeader.substring(7);
 
-                email =
-                        jwtUtil.extractEmail(jwt);
+                // EXTRACT EMAIL
+                email = jwtUtil.extractEmail(jwt);
             }
 
             // VALIDATE TOKEN
             if (
-                    email != null
-                            &&
+                    email != null &&
                             SecurityContextHolder
                                     .getContext()
                                     .getAuthentication() == null
             ) {
 
-                if (
-                        jwtUtil.validateToken(
-                                jwt,
-                                email
-                        )
-                ) {
+                boolean isValid =
+                        jwtUtil.validateToken(jwt, email);
+
+                if (isValid) {
 
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
@@ -100,36 +83,32 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
 
-        } catch (ExpiredJwtException e) {
+            // CONTINUE FILTER CHAIN
+            filterChain.doFilter(request, response);
 
-            response.setStatus(
-                    HttpServletResponse.SC_UNAUTHORIZED
-            );
-
-            response.getWriter()
-                    .write("JWT Token Expired");
-
-            return;
-
-        } catch (
-                MalformedJwtException
-                |
-                SignatureException e
-        ) {
-
-            response.setStatus(
-                    HttpServletResponse.SC_UNAUTHORIZED
-            );
-
-            response.getWriter()
-                    .write("Invalid JWT Token");
-
-            return;
         }
 
-        filterChain.doFilter(
-                request,
-                response
-        );
+        catch (ExpiredJwtException e) {
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            response.getWriter().write("JWT Token Expired");
+        }
+
+        catch (MalformedJwtException | SignatureException e) {
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            response.getWriter().write("Invalid JWT Token");
+        }
+
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+            response.getWriter().write("Authentication Error");
+        }
     }
 }

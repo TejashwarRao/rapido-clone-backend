@@ -1,270 +1,182 @@
 services:
 
-  # =====================================================
-  # POSTGRESQL
-  # =====================================================
-
   postgres:
-    image: postgres:15
-
+    image: postgis/postgis:15-3.4
     container_name: rapido-postgres
-
     environment:
       POSTGRES_DB: rapido_db
       POSTGRES_USER: rapido_user
       POSTGRES_PASSWORD: rapido_pass
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres-data:/var/lib/postgresql/data
-
     networks:
       - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # REDIS
-  # =====================================================
 
   redis:
     image: redis:7
-
     container_name: rapido-redis
-
     ports:
       - "6379:6379"
-
     volumes:
       - redis-data:/data
-
     networks:
       - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # RABBITMQ
-  # =====================================================
 
   rabbitmq:
     image: rabbitmq:management
-
     container_name: rapido-rabbitmq
-
     ports:
       - "5672:5672"
       - "15672:15672"
-
     networks:
       - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # EUREKA SERVER
-  # =====================================================
 
   eureka-server:
-    build: ./eureka-server/eureka-server
-
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
     container_name: eureka-server
-
     ports:
-      - "8761:8761"
-
+      - "8762:8761"
+    networks:
+      - rapido-network
     depends_on:
       - postgres
       - redis
       - rabbitmq
-
-    networks:
-      - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # API GATEWAY
-  # =====================================================
 
   api-gateway:
-    build: ./api-gateway/api-gateway
-
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
     container_name: api-gateway
-
     ports:
       - "9090:9090"
-
-    depends_on:
-      - eureka-server
-
     networks:
       - rapido-network
-
-    restart: always
-
-
-
-  # =====================================================
-  # AUTH SERVICE
-  # =====================================================
-
-  auth-service:
-    build: ./auth-service/auth-service
-
-    container_name: auth-service
-
-    ports:
-      - "8081:8081"
-
     depends_on:
-      - postgres
       - eureka-server
-
-    networks:
-      - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # USER SERVICE
-  # =====================================================
 
   user-service:
-    build: ./user-service/user-service
-
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
     container_name: user-service
-
     ports:
       - "8082:8082"
-
+    environment:
+      DB_USERNAME: rapido_user
+      DB_PASSWORD: rapido_pass
+    networks:
+      - rapido-network
     depends_on:
       - postgres
       - eureka-server
-
-    networks:
-      - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # DRIVER SERVICE
-  # =====================================================
 
   driver-service:
-    build: ./driver-service/driver-service
-
+    build:
+      context: ./driver-service
+      dockerfile: Dockerfile
     container_name: driver-service
-
     ports:
       - "8083:8083"
-
+    environment:
+      DB_USERNAME: rapido_user
+      DB_PASSWORD: rapido_pass
+    networks:
+      - rapido-network
     depends_on:
       - postgres
       - eureka-server
-
-    networks:
-      - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # RIDE SERVICE
-  # =====================================================
 
   ride-service:
-    build: ./ride-service/ride-service
-
+    build:
+      context: ./ride-service
+      dockerfile: Dockerfile
     container_name: ride-service
-
     ports:
       - "8084:8084"
-
+    environment:
+      DB_USERNAME: rapido_user
+      DB_PASSWORD: rapido_pass
+    networks:
+      - rapido-network
     depends_on:
       - postgres
       - eureka-server
-
-    networks:
-      - rapido-network
-
+      - rabbitmq
     restart: always
-
-
 
   payment-service:
-    build: ./payment-service/payment-service
-
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
     container_name: payment-service
-
     ports:
       - "8085:8085"
-
+    environment:
+      DB_USERNAME: rapido_user
+      DB_PASSWORD: rapido_pass
+    networks:
+      - rapido-network
     depends_on:
       - postgres
       - eureka-server
-      - redis
       - rabbitmq
-
-    networks:
-      - rapido-network
-
     restart: always
-
-
-
-  # =====================================================
-  # NOTIFICATION SERVICE
-  # =====================================================
 
   notification-service:
-    build: ./notification-service/notification-service
-
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
     container_name: notification-service
-
     ports:
       - "8086:8086"
-
-    depends_on:
-      - postgres
-      - redis
-      - rabbitmq
-      - eureka-server
-
+    environment:
+      DB_USERNAME: rapido_user
+      DB_PASSWORD: rapido_pass
     networks:
       - rapido-network
-
+    depends_on:
+      - postgres
+      - eureka-server
+      - rabbitmq
     restart: always
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - rapido-network
+    restart: always
 
-
-# =====================================================
-# NETWORKS
-# =====================================================
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - rapido-network
+    depends_on:
+      - prometheus
+    restart: always
 
 networks:
   rapido-network:
-
-
-
-# =====================================================
-# VOLUMES
-# =====================================================
+    driver: bridge
 
 volumes:
   postgres-data:

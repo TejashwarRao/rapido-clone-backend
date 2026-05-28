@@ -1,8 +1,14 @@
 package com.rapido.driver_service.controller;
 
+import com.rapido.driver_service.dto.BestDriverResponse;
+import com.rapido.driver_service.dto.NearbyDriverResponse;
 import com.rapido.driver_service.entity.Driver;
-
+import com.rapido.driver_service.repository.DriverRepository;
 import com.rapido.driver_service.service.DriverService;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -10,53 +16,53 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/drivers")
+@RequiredArgsConstructor
 public class DriverController {
 
     private final DriverService driverService;
 
-    public DriverController(
-            DriverService driverService
-    ) {
+    private final DriverRepository driverRepository;
 
-        this.driverService =
-                driverService;
-    }
+    // TEST DATABASE DATA
 
-    // TEST API
     @GetMapping("/test")
-    public String test() {
+    public List<Driver> testDrivers() {
 
-        return "Driver Service Working Successfully";
+        return driverRepository.findAll();
     }
 
-    // CREATE DRIVER PROFILE
-    @PostMapping("/profile")
-    public Driver createDriverProfile(
-            @RequestBody Driver driver
+    // FIND NEARBY DRIVERS
+
+    @GetMapping("/nearby")
+    public ResponseEntity<List<NearbyDriverResponse>>
+    findNearbyDrivers(
+            @RequestParam Double latitude,
+            @RequestParam Double longitude
     ) {
 
-        return driverService.addDriver(
-                driver
+        return ResponseEntity.ok(
+                driverService.findNearbyDrivers(
+                        latitude,
+                        longitude,
+                        50.0
+                )
         );
     }
 
-    // GET AVAILABLE DRIVERS
-    @GetMapping("/available")
-    public List<Driver> getAvailableDrivers() {
+    // ALLOCATE BEST DRIVER
 
-        return driverService.getAvailableDrivers();
-    }
-
-    // UPDATE ONLINE STATUS
-    @PutMapping("/online/{email}")
-    public String updateOnlineStatus(
-            @PathVariable String email,
-            @RequestParam boolean online
+    @GetMapping("/allocate")
+    public ResponseEntity<BestDriverResponse>
+    allocateBestDriver(
+            @RequestParam Double latitude,
+            @RequestParam Double longitude
     ) {
 
-        return driverService.updateOnlineStatus(
-                email,
-                online
+        return ResponseEntity.ok(
+                driverService.allocateBestDriver(
+                        latitude,
+                        longitude
+                )
         );
     }
 }
