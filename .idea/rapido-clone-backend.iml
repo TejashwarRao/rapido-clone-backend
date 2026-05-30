@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/api-gateway/api-gateway/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/driver-service/driver-service/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/user-service/user-service/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/admin-service/admin-service/src/main/java" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/api-gateway/api-gateway/target" />
       <excludeFolder url="file://$MODULE_DIR$/driver-service/driver-service/target" />
       <excludeFolder url="file://$MODULE_DIR$/eureka-server/eureka-server/target" />
