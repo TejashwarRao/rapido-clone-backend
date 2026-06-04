@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: rapido-prod
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: user-service
+
+  template:
+    metadata:
+      labels:
+        app: user-service
+
+    spec:
+      containers:
+        - name: user-service
+          image: rapido-clone-backend-user-service:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8082
+
+          env:
+            - name: EUREKA_SERVER_URL
+              value: "http://eureka-server:8761/eureka"
+
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/rapido_db
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rapido-secret
+                  key: POSTGRES_USER
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rapido-secret
+                  key: POSTGRES_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: rapido-prod
+
+spec:
+  selector:
+    app: user-service
+
+  ports:
+    - port: 8082
+      targetPort: 8082
+
+  type: ClusterIP
