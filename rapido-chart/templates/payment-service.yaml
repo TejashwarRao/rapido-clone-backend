@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: rapido-prod
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: payment-service
+
+  template:
+    metadata:
+      labels:
+        app: payment-service
+
+    spec:
+      containers:
+        - name: payment-service
+          image: rapido-clone-backend-payment-service:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8085
+
+          env:
+            - name: EUREKA_SERVER_URL
+              value: "http://eureka-server:8761/eureka"
+
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/rapido_db"
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rapido-secret
+                  key: POSTGRES_USER
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rapido-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: SPRING_REDIS_HOST
+              value: "redis"
+
+            - name: SPRING_RABBITMQ_HOST
+              value: "rabbitmq"
+
+            - name: SPRING_RABBITMQ_PORT
+              value: "5672"
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: rapido-secret
+                  key: JWT_SECRET
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: rapido-prod
+
+spec:
+  selector:
+    app: payment-service
+
+  ports:
+    - port: 8085
+      targetPort: 8085
+
+  type: ClusterIP
