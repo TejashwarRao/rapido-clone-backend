@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+
+metadata:
+  name: api-gateway-vs
+  namespace: rapido-prod
+
+spec:
+  hosts:
+    - "*"
+
+  gateways:
+    - rapido-gateway
+
+  http:
+    - route:
+
+        - destination:
+            host: api-gateway
+            subset: v1
+          weight: 90
+
+        - destination:
+            host: api-gateway
+            subset: v2
+          weight: 10

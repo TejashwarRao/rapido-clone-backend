@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+
+metadata:
+  name: payment-fault
+  namespace: rapido-prod
+
+spec:
+  hosts:
+    - payment-service
+
+  http:
+    - fault:
+        delay:
+          percentage:
+            value: 100
+          fixedDelay: 5s
+
+      route:
+        - destination:
+            host: payment-service
