@@ -9,251 +9,123 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-
-		<groupId>
-			org.springframework.boot
-		</groupId>
-
-		<artifactId>
-			spring-boot-starter-parent
-		</artifactId>
-
-		<version>
-			3.3.0
-		</version>
-
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.0</version>
 		<relativePath/>
-
 	</parent>
 
-	<groupId>
-		com.rapido
-	</groupId>
+	<groupId>com.rapido</groupId>
+	<artifactId>api-gateway</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 
-	<artifactId>
-		api-gateway
-	</artifactId>
-
-	<version>
-		0.0.1-SNAPSHOT
-	</version>
-
-	<name>
-		api-gateway
-	</name>
-
-	<description>
-		API Gateway
-	</description>
+	<name>api-gateway</name>
+	<description>API Gateway</description>
 
 	<properties>
-
-		<java.version>
-			17
-		</java.version>
-
-		<spring-cloud.version>
-			2023.0.1
-		</spring-cloud.version>
-
+		<java.version>17</java.version>
+		<spring-cloud.version>2023.0.1</spring-cloud.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 
-		<!-- GATEWAY -->
+		<!-- SPRING CLOUD GATEWAY -->
 
 		<dependency>
-
-			<groupId>
-				org.springframework.cloud
-			</groupId>
-
-			<artifactId>
-				spring-cloud-starter-gateway
-			</artifactId>
-
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
-		<!-- EUREKA -->
+		<!-- EUREKA CLIENT -->
 
 		<dependency>
-
-			<groupId>
-				org.springframework.cloud
-			</groupId>
-
-			<artifactId>
-				spring-cloud-starter-netflix-eureka-client
-			</artifactId>
-
-		</dependency>
-		<!-- Actuator -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-		<!-- Prometheus Metrics -->
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
 		<!-- SECURITY -->
 
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
 
-			<groupId>
-				org.springframework.boot
-			</groupId>
+		<!-- REDIS -->
 
-			<artifactId>
-				spring-boot-starter-security
-			</artifactId>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
 
+		<!-- ACTUATOR -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- PROMETHEUS -->
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 
 		<!-- JWT -->
 
 		<dependency>
-
-			<groupId>
-				io.jsonwebtoken
-			</groupId>
-
-			<artifactId>
-				jjwt-api
-			</artifactId>
-
-			<version>
-				0.11.5
-			</version>
-
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
 		</dependency>
 
 		<dependency>
-
-			<groupId>
-				io.jsonwebtoken
-			</groupId>
-
-			<artifactId>
-				jjwt-impl
-			</artifactId>
-
-			<version>
-				0.11.5
-			</version>
-
-			<scope>
-				runtime
-			</scope>
-
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
-
-			<groupId>
-				io.jsonwebtoken
-			</groupId>
-
-			<artifactId>
-				jjwt-jackson
-			</artifactId>
-
-			<version>
-				0.11.5
-			</version>
-
-			<scope>
-				runtime
-			</scope>
-
-		</dependency>
-		<!-- REDIS REACTIVE -->
-
-		<dependency>
-
-			<groupId>
-				org.springframework.boot
-			</groupId>
-
-			<artifactId>
-				spring-boot-starter-data-redis-reactive
-			</artifactId>
-
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- TEST -->
 
 		<dependency>
-
-			<groupId>
-				org.springframework.boot
-			</groupId>
-
-			<artifactId>
-				spring-boot-starter-test
-			</artifactId>
-
-			<scope>
-				test
-			</scope>
-
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
 
-	<dependencyManagement>
-
-		<dependencies>
-
-			<dependency>
-
-				<groupId>
-					org.springframework.cloud
-				</groupId>
-
-				<artifactId>
-					spring-cloud-dependencies
-				</artifactId>
-
-				<version>
-					${spring-cloud.version}
-				</version>
-
-				<type>
-					pom
-				</type>
-
-				<scope>
-					import
-				</scope>
-
-			</dependency>
-
-		</dependencies>
-
-	</dependencyManagement>
-
 	<build>
-
 		<plugins>
 
 			<plugin>
-
-				<groupId>
-					org.springframework.boot
-				</groupId>
-
-				<artifactId>
-					spring-boot-maven-plugin
-				</artifactId>
-
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
 		</plugins>
-
 	</build>
 
 </project>

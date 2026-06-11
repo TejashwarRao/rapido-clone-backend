@@ -1,0 +1,11 @@
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+
+metadata:
+  name: rapido-telemetry
+  namespace: rapido-prod
+
+spec:
+  metrics:
+    - providers:
+        - name: prometheus
