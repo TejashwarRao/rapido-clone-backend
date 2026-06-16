@@ -1,6 +1,5 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: jaeger
   namespace: observability
@@ -21,7 +20,7 @@ spec:
       containers:
         - name: jaeger
 
-          image: jaegertracing/all-in-one:latest
+          image: jaegertracing/all-in-one:1.57
 
           ports:
             - containerPort: 16686
@@ -40,7 +39,6 @@ spec:
     app: jaeger
 
   ports:
-
     - name: ui
       port: 16686
       targetPort: 16686
@@ -48,5 +46,3 @@ spec:
     - name: otlp
       port: 4317
       targetPort: 4317
-
-  type: ClusterIP
