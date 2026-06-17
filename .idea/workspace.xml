@@ -6,26 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1614bc13-5d15-4a0f-affd-1d3e7e6af988" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/api-gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/api-gateway/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api-gateway/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/api-gateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/auth-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/auth-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/auth-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/driver-service/driver-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/driver-service/driver-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/driver-service/driver-service/src/main/java/com/rapido/driver_service/DriverServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/driver-service/driver-service/src/main/java/com/rapido/driver_service/DriverServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/driver-service/driver-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/driver-service/driver-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8s/jaeger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/jaeger.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/monitoring/prometheus/prometheus.yml" beforeDir="false" afterPath="$PROJECT_DIR$/monitoring/prometheus/prometheus.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/notification-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/notification-service/src/main/java/com/rapido/notification_service/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/notification-service/src/main/java/com/rapido/notification_service/service/NotificationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/notification-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/notification-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/payment-service/payment-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/payment-service/payment-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/payment-service/payment-service/src/main/java/com/rapido/payment_service/service/PaymentService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/payment-service/payment-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/payment-service/payment-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ride-service/ride-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ride-service/ride-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ride-service/ride-service/src/main/java/com/rapido/ride_service/controller/RideController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ride-service/ride-service/src/main/java/com/rapido/ride_service/controller/RideController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ride-service/ride-service/src/main/java/com/rapido/ride_service/entity/Ride.java" beforeDir="false" afterPath="$PROJECT_DIR$/ride-service/ride-service/src/main/java/com/rapido/ride_service/entity/Ride.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ride-service/ride-service/src/main/java/com/rapido/ride_service/service/RideService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ride-service/ride-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ride-service/ride-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

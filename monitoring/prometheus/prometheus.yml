@@ -26,3 +26,14 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: ['host.docker.internal:8086']
+        global:
+          scrape_interval: 15s
+
+        scrape_configs:
+
+          - job_name: 'search-service'
+            metrics_path: '/actuator/prometheus'
+
+            static_configs:
+              - targets:
+                  - 'host.docker.internal:8080'
