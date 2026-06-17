@@ -115,7 +115,26 @@ services:
       - eureka-server
       - rabbitmq
     restart: always
+  elasticsearch:
+    image: elasticsearch:8.15.0
+    container_name: rapido-elasticsearch
 
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
+    networks:
+      - rapido-network
+
+    restart: always
   payment-service:
     build:
       context: ./payment-service
@@ -152,6 +171,8 @@ services:
       - rabbitmq
     restart: always
 
+
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -181,3 +202,4 @@ networks:
 volumes:
   postgres-data:
   redis-data:
+  elasticsearch-data:
